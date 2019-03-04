@@ -4,7 +4,7 @@ import { COLOR_PRESET_GLOBALS } from './config'
 
 // this code is sincerely terrible... don't judge me
 // i'll do (p)react or something later if this is useful
-export function render(steps: IStep[], SYSTEMS: string[], DEBUG: boolean, notes?: string[], risks?: string[]) {
+export default function render(steps: IStep[], SYSTEMS: string[], DEBUG: boolean, notes?: string[], risks?: string[]) {
   const context = {};
   const COLORS = getColors(SYSTEMS);
   const colWidth = Math.round(1000 / SYSTEMS.length) / 10;
@@ -17,7 +17,7 @@ export function render(steps: IStep[], SYSTEMS: string[], DEBUG: boolean, notes?
     return col;
   }));
   const graph = el('section', colHtmls);
-  let lines = [];
+  let lines: HTMLElement[] = [];
   for (var i = 0; i < SYSTEMS.length; i++) {
     const line = el('div.line');
     line.style.height = `${window.innerHeight}px`;
@@ -33,7 +33,7 @@ export function render(steps: IStep[], SYSTEMS: string[], DEBUG: boolean, notes?
   risks && graph.appendChild(getListOfThings('Risks', risks));
   notes && graph.appendChild(getListOfThings('Notes', notes));
 
-  const appDiv: HTMLElement = document.getElementById('app');
+  const appDiv: HTMLElement = document.getElementById('app') as HTMLElement;
   appDiv.innerHTML = graph.innerHTML;
 }
 
@@ -72,14 +72,14 @@ function getColors(systems) {
 
 }
 
-export function createStepElements(steps: IStep[], SYSTEMS: string[], COLORS, DEBUG: boolean, notes: string[], risks: string[]) {
+export function createStepElements(steps: IStep[], SYSTEMS: string[], COLORS, DEBUG: boolean, notes?: string[], risks?: string[]) {
   return steps.map((rawStep, stepIndex: number) => {
     const step = Object.assign({}, rawStep);
     if (step.internally) {
       Object.assign(step, { from: rawStep.internally, to: rawStep.internally });
     }
-    const startIndex = SYSTEMS.indexOf(step.from);
-    const endIndex = SYSTEMS.indexOf(step.to || step.from);
+    const startIndex = SYSTEMS.indexOf(step.from as string);
+    const endIndex = SYSTEMS.indexOf((step.to || step.from) as string);
     const selfDirected = (startIndex === endIndex) || step.internally;
     const startName = SYSTEMS[startIndex];
     const endName = SYSTEMS[endIndex];
@@ -132,7 +132,7 @@ export function createStepElements(steps: IStep[], SYSTEMS: string[], COLORS, DE
     }
 
     const stepHtml = getStepHtml(message, stepStyle);
-    
+
     stepHtml.style.width = `${width}%`;
 
     stepHtml.className = stepHtml.className + ' ' + additionalCssClass;
@@ -150,8 +150,8 @@ export function createStepElements(steps: IStep[], SYSTEMS: string[], COLORS, DE
     (step.with || step.withJson) && stepHtml.appendChild(getDiamond(stepStyle.altStyle, getWith(step)));
     Object.assign(stepHtml.style, stepStyle);
     DEBUG && stepHtml.appendChild(getDebug(`
-width: ${width} 
-colCount: ${colCount} 
+width: ${width}
+colCount: ${colCount}
 additionalCssClass: ${additionalCssClass}
 startIndex: ${startIndex}
 stepStyle.marginLeft: ${stepStyle.marginLeft}
