@@ -6,9 +6,11 @@
     "lodash": "^4.17.11"
   },
   "scripts": {
-    "build-site": "parcel build ./src/example.html",
-    "build-umd": "parcel build ./src/index.ts --global diagrams",
-    "start": "parcel ./src/example.html"
+    "build-example-html": "parcel build ./src/example.html",
+    "example-html": "parcel ./src/example.html",
+    "build-index-global": "parcel build ./src/index.ts --global diagrams",
+    "build-index": "parcel build ./src/index.ts",
+    "start": "npm run example-html"
   },
   "devDependencies": {
     "parcel-bundler": "^1.11.0",
